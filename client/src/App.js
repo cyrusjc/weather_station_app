@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import './App.css'
+
 class App extends Component {
   state = {
     cow: '',
@@ -10,9 +11,7 @@ componentDidMount() {
   }
 fetchCow = async () => {
     const response = await fetch(`/api/cow`)
-    console.log(response)
     const initialCow = await response.json()
-    //console.log(initialCow)
     const cow = initialCow.moo
     this.setState({ cow })
   }
