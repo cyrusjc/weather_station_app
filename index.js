@@ -10,6 +10,13 @@ const app = express();
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 
+const path = require('path')
+// Serve static files from the React frontend app
+app.use(express.static(path.join(__dirname, 'client/build')))
+// Anything that doesn't match the above, send back index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname + '/client/build/index.html'))
+})
 
 
 // Serve our api route /cow that returns a custom talking text cow
@@ -41,3 +48,4 @@ app.post('/', (req, res)=>{
   console.log(req.body);
   res.status(201).send('Successfull');
 });
+
