@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import './App.css'
 
+
+
 class App extends Component {
   state = {
     cow: '',
@@ -22,11 +24,18 @@ customCow = async evt => {
     const custom = await response.json()
     const cow = custom.moo
     this.setState({ cow, text: '' })
+    console.log(response);
   }
 handleChange = evt => {
     this.setState({ [evt.target.name]: evt.target.value })
     console.log(this.state.text)
   }
+getData = async evt =>{
+  const response = await fetch(`/api/getData`)
+  const custom = await response.json()
+  console.log(custom);
+  console.log(response);
+}
 render() {
     return (
       <div className="App">
@@ -42,6 +51,7 @@ render() {
           />
           <button type="submit">Show me a talking cow!</button>
         </form>
+        <button type="submit" onClick={this.getData}>Get Data</button>
       </div>
     )
   }
