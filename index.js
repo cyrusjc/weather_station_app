@@ -1,9 +1,14 @@
-const express = require('express')
-const cowsay = require('cowsay')
-const cors = require('cors')
-const path = require('path')
+
+
+
+const express = require('express');
+const cowsay = require('cowsay');
+const cors = require('cors');
+const path = require('path');
 const mongoose = require('mongoose');
 const Data = require('./models/data');
+require('dotenv').config();
+
 const { SSL_OP_TLS_BLOCK_PADDING_BUG } = require('constants');
 
 // Create the server
@@ -13,8 +18,7 @@ const app = express();
 let data = new Data();
 
 //connect to mongoDB
-const dbURI = "mongodb+srv://user:12345@app.kcshw.mongodb.net/app_data?retryWrites=true&w=majority"
-mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true})
   .then((result)=> console.log('connected'))
   .catch((err)=> console.log(err));
 
