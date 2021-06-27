@@ -1,6 +1,8 @@
 const path = require('path');
 const cors = require('cors');
 
+const Data = require('./models/data');	
+global.data = Data();
 //========================================
 // Initializing Express
 //========================================
@@ -13,6 +15,7 @@ const index = require("./routes/index");
 //middleware functions
 app_backend.use(express.urlencoded({extended: false}));
 app_backend.use(express.json());
+app_backend.use(index);
 
 const { SSL_OP_TLS_BLOCK_PADDING_BUG } = require('constants');
 
@@ -23,7 +26,6 @@ const { SSL_OP_TLS_BLOCK_PADDING_BUG } = require('constants');
 //   res.sendFile(path.join(__dirname + '/client/build/index.html'))
 // })
 
-app_backend.use(index);
 
 app_backend.listen(PORT_BACKEND, () => {
   console.log(`Mixing it up on port ${PORT_BACKEND}`)
@@ -80,8 +82,8 @@ io.on("connection", (socket) => {
 });
 
 const getApiAndEmit = socket => {
-  const response = new Date();
-  console.log(response);
+  const response = data;
+  console.log(data);
   // Emitting a new message. Will be consumed by the client
   socket.emit("FromAPI", response);
 };

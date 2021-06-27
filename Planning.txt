@@ -1,0 +1,18 @@
+Graph
+    create a variable x that determines the time interval that the graph will show Ex. 30 seconds
+    reach out to the database and query every n seconds for new inputs
+        rows have a boolean value: read 
+    potential start and stop "recording functionality" which only reads when a button is clicked on the UI 
+    and stops when the button is clicked again
+        "recording" of input values stored as text in seperate database with key as date
+    replay option
+        displays previous "recordings" in real time as they were inputed
+
+Etch a sketch
+    create a variable x to determine the frequency of database requests (essentially fps)
+    reach out to database every x seconds and retrieve new instructions
+    calculate the distance of the next point on the graph based on intensity of joycon coordinates
+        ignore x=0 y=0
+    clear button to reset sketch
+    sketch begins in the middle by default, can build cursor-based starting points in the future
+    sketches stored in database similarly to graph recordings
