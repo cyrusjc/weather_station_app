@@ -1,11 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
-
-const Data = require('../models/data');
-
-const cowsay = require('cowsay');
 const cors = require('cors');
+// const Data = require('../models/data');
+// global.data = Data();
+
+router.use(express.urlencoded({extended: false}));
+router.use(express.json());
+
 
 // Post ata obtained from Arduino stored in the body of request
 // Data is then stored in Data object defined in ./models/data.js
@@ -15,12 +17,11 @@ router.post('/', (req, res)=>{
     // console.log(typeof req.body.x1);
     //console.log(getDateTime());
     
-    let data = Data();
-    
     data.x_data = req.body.x1;
-    data.y_data = req.body.y1
-  
-    console.log(data);
+    data.y_data = req.body.y1;
+
+
+    console.log(req.body);
     // data.save()
     //   .then((result) => {
     //     res.send(result)

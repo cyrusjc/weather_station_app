@@ -18,7 +18,7 @@ function App() {
 
   return (
     <p>
-      It's <time dateTime={response}>{response}</time>
+      x:{JSON.stringify(response.x_data)} y:{JSON.stringify(response.y_data)} 
     </p>
   );
 
