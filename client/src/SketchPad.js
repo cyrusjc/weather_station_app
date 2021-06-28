@@ -11,46 +11,57 @@ function SketchPad() {
   const name = 'sketchLine';
   const color = 'black';
   const graphDiameter = 1000;
-  const [graphDataPoints, setGraphDataPoints] = useState([]);
-  const [dataPoints, setDataPoints] = useState([0,0])
+  const [graphDataPoints, setGraphDataPoints] = useState([{ x: 1, y: 2 }, { x: 3, y: 5 }, { x: 7, y: -3 }]);
+  const [dataPoints, setDataPoints] = useState([0, 0])
+  const testData = [{ x: 1, y: 2 }, { x: 3, y: 5 }, { x: 7, y: -3 }]
 
   useEffect(() => {
     const socket = socketIOClient(ENDPOINT, {
       withCredentials: true,
     });
     socket.on("FromAPI", data => {
-      processJoystickData(data);
+      //processJoystickData(data);
     });
   }, []);
 
-  function calculateNewCoordinates(oldCoordinates, newInput){};
+  function calculateNewCoordinates(oldCoordinates, newInput) { };
+  function test() {
+    setDataPoints([dataPoints[0] - 1, dataPoints[1]]);
+    graphDataPoints.push({x:dataPoints[0],y:dataPoints[1]})
+    setGraphDataPoints(graphDataPoints);
+    console.log(graphDataPoints);
+  }
 
-  function processJoystickData(data){
-    const dataJson = JSON.parse(data);
-    if(dataJson.x_data < 72){
-      setDataPoints([dataPoints[0]-1, dataPoints[1]]);
-    } 
-    else if(dataJson.x_data > 76){
-      setDataPoints([dataPoints[0]+1, dataPoints[1]]);
-    } 
-    if(dataJson.y_data < 72){
-      setDataPoints([dataPoints[0], dataPoints[1]-1]);
-    } 
-    else if(dataJson.y_data> 76){
-      setDataPoints([dataPoints[0], dataPoints[1]+1]);
+  function processJoystickData(data) {
+    if (data.x_data < 72) {
+      setDataPoints([dataPoints[0] - 1, dataPoints[1]]);
     }
-    setGraphDataPoints(graphDataPoints.concat(dataPoints));
+    else if (data.x_data > 76) {
+      setDataPoints([dataPoints[0] + 1, dataPoints[1]]);
+    }
+    if (data.y_data < 72) {
+      setDataPoints([dataPoints[0], dataPoints[1] - 1]);
+    }
+    else if (data.y_data > 76) {
+      setDataPoints([dataPoints[0], dataPoints[1] + 1]);
+    }
+    graphDataPoints.push({x:dataPoints[0],y:dataPoints[1]})
+    setGraphDataPoints(graphDataPoints);
   };
 
   return (
     <div className="SketchPad">
-      <h3>Not Weather Station</h3>
-      <LineChart width={graphDiameter} height={graphDiameter} data={graphDataPoints}>
-        <Line type="monotone" dataKey="uv" stroke="#8884d8" />
-        <CartesianGrid stroke="#ccc" />
-        <XAxis dataKey="name" />
-        <YAxis />
-      </LineChart>
+      <div>
+        <h3>Not Weather Station</h3>
+        <LineChart width={graphDiameter} height={graphDiameter} data={graphDataPoints}>
+          <Line type="monotone" dataKey="y" stroke="#8884d8" dot={false} />
+          <XAxis dataKey="x" />
+          <YAxis />
+        </LineChart>
+      </div>
+      <button onClick={() => test()}>
+        Click me
+      </button>
     </div>
   );
 }

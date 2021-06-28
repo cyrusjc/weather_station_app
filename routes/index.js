@@ -15,12 +15,11 @@ router.post('/', (req, res)=>{
     // console.log(typeof req.body.x1);
     //console.log(getDateTime());
     
-    let data = Data();
-    
     data.x_data = req.body.x1;
     data.y_data = req.body.y1
   
-    console.log(data);
+    // console.log("From Arduino:");
+    // console.log(data);
     // data.save()
     //   .then((result) => {
     //     res.send(result)
