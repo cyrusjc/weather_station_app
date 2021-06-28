@@ -1,8 +1,12 @@
 const path = require('path');
 const cors = require('cors');
 
-const Data = require('./models/data');	
-global.data = Data();
+// const Data = require('./models/data');	
+// global.data = Data();
+
+const Coordinate = require('./models/coordinate.js');	
+global.data = new Coordinate();
+
 //========================================
 // Initializing Express
 //========================================
@@ -74,7 +78,7 @@ io.on("connection", (socket) => {
   if (interval) {
     clearInterval(interval);
   }
-  interval = setInterval(() => getApiAndEmit(socket), 1000);
+  interval = setInterval(() => getApiAndEmit(socket), 100);
   socket.on("disconnect", () => {
     console.log("Client disconnected");
     clearInterval(interval);
@@ -82,10 +86,11 @@ io.on("connection", (socket) => {
 });
 
 const getApiAndEmit = socket => {
-  const response = data;
-  console.log(data);
+  // console.log("From Socket");
+  const response = {}
+  console.log(global.data);
   // Emitting a new message. Will be consumed by the client
-  socket.emit("FromAPI", response);
+  socket.emit("FromAPI", data);
 };
 
 server.listen(PORT_SOCKET, () => {
