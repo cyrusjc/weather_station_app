@@ -11,8 +11,8 @@ function SketchPad() {
   const name = 'sketchLine';
   const color = 'black';
   const graphDiameter = 1000;
-  const [graphDataPoints, setGraphDataPoints] = useState([{ x: 1, y: 2 }, { x: 3, y: 5 }, { x: 7, y: -3 }]);
-  const [dataPoints, setDataPoints] = useState([0, 0])
+  var [graphDataPoints, setGraphDataPoints] = useState([{ x: 1, y: 2 }, { x: 3, y: 5 }, { x: 7, y: -3 }]);
+  var [dataPoints, setDataPoints] = useState([0, 0])
   const testData = [{ x: 1, y: 2 }, { x: 3, y: 5 }, { x: 7, y: -3 }]
 
   useEffect(() => {
@@ -20,33 +20,52 @@ function SketchPad() {
       withCredentials: true,
     });
     socket.on("FromAPI", data => {
-      //processJoystickData(data);
+      
+      //console.log(data);
+      //test();
+      processJoystickData(data);
     });
   }, []);
 
   function calculateNewCoordinates(oldCoordinates, newInput) { };
-  function test() {
-    setDataPoints([dataPoints[0] - 1, dataPoints[1]]);
-    graphDataPoints.push({x:dataPoints[0],y:dataPoints[1]})
-    setGraphDataPoints(graphDataPoints);
+
+  const test = ()=> {
+
+    var dataArray = graphDataPoints;
+    var dataPoint = dataPoints;
+
+    dataPoint[0] = dataPoint[0] - 1;
+
+    dataArray.push([dataPoint[0], dataPoint[1]]);
+    setGraphDataPoints(dataArray);
+
+    
+    // setDataPoints([dataPoints[0] - 1, dataPoints[1]]);
+    // graphDataPoints.push({x:dataPoints[0],y:dataPoints[1]})
+    // setGraphDataPoints(graphDataPoints);
     console.log(graphDataPoints);
   }
 
   function processJoystickData(data) {
-    if (data.x_data < 72) {
-      setDataPoints([dataPoints[0] - 1, dataPoints[1]]);
+
+    var dataArray = graphDataPoints;
+    var dataPoint = dataPoints;
+
+    if (data.x_data < 50) {
+      dataPoint[0] = dataPoint[0] - 1;
     }
-    else if (data.x_data > 76) {
-      setDataPoints([dataPoints[0] + 1, dataPoints[1]]);
+    else if (data.x_data > 90) {
+      dataPoint[0] = dataPoint[0] + 1;
     }
-    if (data.y_data < 72) {
-      setDataPoints([dataPoints[0], dataPoints[1] - 1]);
+    if (data.y_data < 50) {
+      dataPoint[1] = dataPoint[1] - 1;
     }
-    else if (data.y_data > 76) {
-      setDataPoints([dataPoints[0], dataPoints[1] + 1]);
+    else if (data.y_data > 90) {
+      dataPoint[1] = dataPoint[1] + 1;
     }
-    graphDataPoints.push({x:dataPoints[0],y:dataPoints[1]})
-    setGraphDataPoints(graphDataPoints);
+    dataArray.push([dataPoint[0], dataPoint[1]]);
+    setGraphDataPoints(dataArray);
+    console.log(dataArray);
   };
 
   return (
