@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import socketIOClient from "socket.io-client";
 import { LineChart, Line, CartesianGrid, XAxis, YAxis } from 'recharts';
 import './SketchPad.css'
+import { response } from 'express';
 
 
 const ENDPOINT = "http://localhost:4001";
@@ -15,6 +16,8 @@ function SketchPad() {
   var [dataPoints, setDataPoints] = useState([0, 0])
   const testData = [{ x: 1, y: 2 }, { x: 3, y: 5 }, { x: 7, y: -3 }]
 
+
+
   useEffect(() => {
     const socket = socketIOClient(ENDPOINT, {
       withCredentials: true,
@@ -24,8 +27,9 @@ function SketchPad() {
       //console.log(data);
       //test();
       processJoystickData(data);
+
     });
-  }, []);
+  }, [graphDataPoints]);
 
   function calculateNewCoordinates(oldCoordinates, newInput) { };
 
@@ -65,9 +69,9 @@ function SketchPad() {
     }
     dataArray.push([dataPoint[0], dataPoint[1]]);
     setGraphDataPoints(dataArray);
-    console.log(dataArray);
-  };
-
+    console.log(dataPoint);
+  }
+  
   return (
     <div className="SketchPad">
       <div>
