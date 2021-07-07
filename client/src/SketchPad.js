@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import socketIOClient from "socket.io-client";
-import { LineChart, Line, CartesianGrid, XAxis, YAxis } from 'recharts';
 import './SketchPad.css'
-import { response } from 'express';
 
 
 const ENDPOINT = "http://localhost:4001";
@@ -11,10 +9,9 @@ function SketchPad() {
   const id = '1';
   const name = 'sketchLine';
   const color = 'black';
-  const graphDiameter = 1000;
-  var [graphDataPoints, setGraphDataPoints] = useState([{ x: 1, y: 2 }, { x: 3, y: 5 }, { x: 7, y: -3 }]);
-  var [dataPoints, setDataPoints] = useState([0, 0])
-  const testData = [{ x: 1, y: 2 }, { x: 3, y: 5 }, { x: 7, y: -3 }]
+  const graphDiameter = 250;
+  var [graphDataPoints, setGraphDataPoints] = useState([{ x: graphDiameter, y: graphDiameter }]);
+  var [dataPoints, setDataPoints] = useState([graphDiameter, graphDiameter])
 
 
 
@@ -31,10 +28,11 @@ function SketchPad() {
     });
   }, [graphDataPoints]);
 
-  function calculateNewCoordinates(oldCoordinates, newInput) { };
-
   const test = ()=> {
 
+    var c = document.getElementById("sketchCanvas");
+    var ctx = c.getContext("2d");
+    ctx.moveTo(dataPoints[0],dataPoints[1]);
     var dataArray = graphDataPoints;
     var dataPoint = dataPoints;
 
@@ -42,7 +40,8 @@ function SketchPad() {
 
     dataArray.push([dataPoint[0], dataPoint[1]]);
     setGraphDataPoints(dataArray);
-
+    ctx.lineTo(dataPoint[0],dataPoint[1]);
+    ctx.stroke();
     
     // setDataPoints([dataPoints[0] - 1, dataPoints[1]]);
     // graphDataPoints.push({x:dataPoints[0],y:dataPoints[1]})
@@ -51,6 +50,11 @@ function SketchPad() {
   }
 
   function processJoystickData(data) {
+
+    //get canvas starting point
+    var c = document.getElementById("sketchCanvas");
+    var ctx = c.getContext("2d");
+    ctx.moveTo(dataPoints[0],dataPoints[1]);
 
     var dataArray = graphDataPoints;
     var dataPoint = dataPoints;
@@ -70,17 +74,17 @@ function SketchPad() {
     dataArray.push([dataPoint[0], dataPoint[1]]);
     setGraphDataPoints(dataArray);
     console.log(dataPoint);
+
+    ctx.lineTo(dataPoint[0],dataPoint[1]);
+    ctx.stroke();
   }
   
   return (
     <div className="SketchPad">
       <div>
         <h3>Not Weather Station</h3>
-        <LineChart width={graphDiameter} height={graphDiameter} data={graphDataPoints}>
-          <Line type="monotone" dataKey="y" stroke="#8884d8" dot={false} />
-          <XAxis dataKey="x" />
-          <YAxis />
-        </LineChart>
+        <canvas id="sketchCanvas" width={graphDiameter*2} height={graphDiameter*2}>
+          Your browser does not support the HTML canvas tag.</canvas>
       </div>
       <button onClick={() => test()}>
         Click me
