@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import socketIOClient from "socket.io-client";
 import './SketchPad.css'
 
-
+const scale = 3;
 const ENDPOINT = "http://localhost:4001";
 
 function SketchPad() {
@@ -60,16 +60,16 @@ function SketchPad() {
     var dataPoint = dataPoints;
 
     if (data.x_data < 50) {
-      dataPoint[0] = dataPoint[0] - 1;
+      dataPoint[0] = dataPoint[0] - scale;
     }
     else if (data.x_data > 90) {
-      dataPoint[0] = dataPoint[0] + 1;
+      dataPoint[0] = dataPoint[0] + scale;
     }
     if (data.y_data < 50) {
-      dataPoint[1] = dataPoint[1] - 1;
+      dataPoint[1] = dataPoint[1] - scale;
     }
     else if (data.y_data > 90) {
-      dataPoint[1] = dataPoint[1] + 1;
+      dataPoint[1] = dataPoint[1] + scale;
     }
     dataArray.push([dataPoint[0], dataPoint[1]]);
     setGraphDataPoints(dataArray);
@@ -82,7 +82,7 @@ function SketchPad() {
   return (
     <div className="SketchPad">
       <div>
-        <h3>Not Weather Station</h3>
+        <h3>Online Etch-a-sketch</h3>
         <canvas id="sketchCanvas" width={graphDiameter*2} height={graphDiameter*2}>
           Your browser does not support the HTML canvas tag.</canvas>
       </div>
