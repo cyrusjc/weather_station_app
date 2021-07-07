@@ -13,12 +13,12 @@ function SketchPad() {
   var [graphDataPoints, setGraphDataPoints] = useState([{ x: graphDiameter, y: graphDiameter }]);
   var [dataPoints, setDataPoints] = useState([graphDiameter, graphDiameter])
 
-
+  const socket = socketIOClient(ENDPOINT, {
+    withCredentials: true,
+  });
 
   useEffect(() => {
-    const socket = socketIOClient(ENDPOINT, {
-      withCredentials: true,
-    });
+
     socket.on("FromAPI", data => {
       
       //console.log(data);
@@ -49,6 +49,12 @@ function SketchPad() {
     console.log(graphDataPoints);
   }
 
+
+  function saveData(){
+    console.log();
+    socket.emit("saveDB", graphDataPoints);
+  }
+
   function processJoystickData(data) {
 
     //get canvas starting point
@@ -59,24 +65,30 @@ function SketchPad() {
     var dataArray = graphDataPoints;
     var dataPoint = dataPoints;
 
+    let changed = false;
+
     if (data.x_data < 50) {
       dataPoint[0] = dataPoint[0] - scale;
+      changed = true;
     }
     else if (data.x_data > 90) {
       dataPoint[0] = dataPoint[0] + scale;
+      changed = true;
     }
     if (data.y_data < 50) {
       dataPoint[1] = dataPoint[1] - scale;
+      changed = true;
     }
     else if (data.y_data > 90) {
       dataPoint[1] = dataPoint[1] + scale;
+      changed = true;
     }
-    dataArray.push([dataPoint[0], dataPoint[1]]);
-    setGraphDataPoints(dataArray);
-    console.log(dataPoint);
-
-    ctx.lineTo(dataPoint[0],dataPoint[1]);
-    ctx.stroke();
+    if(changed){
+      dataArray.push({x:dataPoint[0],y:dataPoint[1]});
+      setGraphDataPoints(dataArray);
+      ctx.lineTo(dataPoint[0],dataPoint[1]);
+      ctx.stroke();
+    }
   }
   
   return (
@@ -86,8 +98,8 @@ function SketchPad() {
         <canvas id="sketchCanvas" width={graphDiameter*2} height={graphDiameter*2}>
           Your browser does not support the HTML canvas tag.</canvas>
       </div>
-      <button onClick={() => test()}>
-        Click me
+      <button onClick={() => saveData()}>
+        Send Data
       </button>
     </div>
   );
