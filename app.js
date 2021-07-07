@@ -1,8 +1,8 @@
 const path = require('path');
 const cors = require('cors');
 
-// const Data = require('./models/data');	
-// global.data = Data();
+const Data = require('./models/data');	
+
 
 const Coordinate = require('./models/coordinate.js');	
 global.data = new Coordinate();
@@ -79,17 +79,32 @@ io.on("connection", (socket) => {
     clearInterval(interval);
   }
   interval = setInterval(() => getApiAndEmit(socket), 100);
+
+  socket.on("saveDB", sketch => {
+    data = Data();
+    data.points = sketch;
+
+    console.log(data);
+
+    data.save()
+      .then((result) => {
+        console.log("Saved");
+      })
+      .catch((err)=>{console.log(err)});
+    console.log(data.x_data,data.y_data);
+
+  });
+
   socket.on("disconnect", () => {
     console.log("Client disconnected");
     clearInterval(interval);
   });
 });
 
+
+
 const getApiAndEmit = socket => {
-  // console.log("From Socket");
   const response = {}
-  console.log(global.data);
-  // Emitting a new message. Will be consumed by the client
   socket.emit("FromAPI", data);
 };
 

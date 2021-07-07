@@ -18,12 +18,13 @@ function SketchPad() {
     {x:290,y:270},{x:280,y:280},{x:270,y:290},{x:260,y:300},{x:250,y:310},
     {x:240,y:300},{x:230,y:290},{x:220,y:280},{x:210,y:270},
     {x:200,y:260},{x:200,y:250},{x:210,y:240},{x:220,y:230},{x:230,y:230},{x:240,y:240},{x:250,y:250}]
-  var grid = [];
+
+  const socket = socketIOClient(ENDPOINT, {
+    withCredentials: true,
+  });
 
   useEffect(() => {
-    const socket = socketIOClient(ENDPOINT, {
-      withCredentials: true,
-    });
+
     socket.on("FromAPI", data => {
       processJoystickData(data);
     });
@@ -73,6 +74,12 @@ function SketchPad() {
     }
   }
 
+
+  function saveData(){
+    console.log();
+    socket.emit("saveDB", graphDataPoints);
+  }
+
   function processJoystickData(data) {
 
     //get canvas starting point
@@ -84,11 +91,11 @@ function SketchPad() {
     var dataPoint = dataPoints;
     let changed = false;
     if (data.x_data < 50) {
-      dataPoint[0] = dataPoint[0] + scale;
+      dataPoint[0] = dataPoint[0] - scale;
       changed = true;
     }
     else if (data.x_data > 90) {
-      dataPoint[0] = dataPoint[0] - scale;
+      dataPoint[0] = dataPoint[0] + scale;
       changed = true;
     }
     if (data.y_data < 50) {
@@ -101,11 +108,11 @@ function SketchPad() {
     }
     if(changed){
       dataArray.push([dataPoint[0], dataPoint[1]]);
+
       setGraphDataPoints(dataArray);
       ctx.lineTo(dataPoint[0],dataPoint[1]);
       ctx.stroke();
     }
-
   }
   
   return (
@@ -118,6 +125,9 @@ function SketchPad() {
       <Button variant="primary" onClick={() => drawHeart()}>
         Draw Heart
       </Button>{' '}
+      <button onClick={() => saveData()}>
+        Send Data
+      </button>
       <Button variant="danger" onClick={() => clearCanvas()}>
         Clear
       </Button>{' '}
