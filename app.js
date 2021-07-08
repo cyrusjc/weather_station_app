@@ -87,17 +87,17 @@ io.on("connection", (socket) => {
   // this socket takes data from client/sketchpad.js and obtains a hashkey to store sketch into mongoDB 
   socket.on("saveDB", sketch => {
 
-    data = Data();
-    data.points = sketch;
-    data.hashKey = hash(sketch);
+    data_sketch = Data();
+    data_sketch.points = sketch;
+    data_sketch.hashKey = hash(sketch);
 
-    Data.findOne({hashKey : data.hashKey})
+    Data.findOne({hashKey : data_sketch.hashKey})
       .then(found =>{
         if(found){
           console.log("Data already exists");
         }
         else{
-          data.save()
+          data_sketch.save()
           .then(() => {
             console.log("Saved");
           })

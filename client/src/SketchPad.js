@@ -3,7 +3,8 @@ import socketIOClient from "socket.io-client";
 import Button from 'react-bootstrap/Button';
 import './SketchPad.css'
 
-
+const UPPER_BOUND = 90
+const LOWER_BOUND = 50
 
 const scale = 3;
 const ENDPOINT = "http://localhost:4001";
@@ -87,25 +88,27 @@ function SketchPad() {
     //get canvas starting point
     var c = document.getElementById("sketchCanvas");
     var ctx = c.getContext("2d");
+    ctx.beginPath();
+    ctx.strokeStyle="black"
     ctx.moveTo(dataPoints[0],dataPoints[1]);
-
+    
     var dataArray = graphDataPoints;
     var dataPoint = dataPoints;
     let changed = false;
-    if (data.x_data < 50) {
+    if (data.x_data < LOWER_BOUND) {
       dataPoint[0] = dataPoint[0] - scale;
       changed = true;
     }
-    else if (data.x_data > 90) {
+    else if (data.x_data > UPPER_BOUND) {
       dataPoint[0] = dataPoint[0] + scale;
       changed = true;
     }
-    if (data.y_data < 50) {
-      dataPoint[1] = dataPoint[1] + scale;
+    if (data.y_data < LOWER_BOUND) {
+      dataPoint[1] = dataPoint[1] - scale;
       changed = true;
     }
-    else if (data.y_data > 90) {
-      dataPoint[1] = dataPoint[1] - scale;
+    else if (data.y_data > UPPER_BOUND) {
+      dataPoint[1] = dataPoint[1] + scale;
       changed = true;
     }
     if(changed){
