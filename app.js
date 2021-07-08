@@ -1,8 +1,12 @@
 const path = require('path');
 const cors = require('cors');
 
+// data model schema for mongoose
 const Data = require('./models/data');	
 
+// object hash is for obtaining a hash key from our sketchpad object to obtain a unique key 
+// to ensure we do not store multiple sketches
+var hash = require('object-hash');
 
 const Coordinate = require('./models/coordinate.js');	
 global.data = new Coordinate();
@@ -80,18 +84,31 @@ io.on("connection", (socket) => {
   }
   interval = setInterval(() => getApiAndEmit(socket), 100);
 
+  // this socket takes data from client/sketchpad.js and obtains a hashkey to store sketch into mongoDB 
   socket.on("saveDB", sketch => {
+
     data = Data();
     data.points = sketch;
+    data.hashKey = hash(sketch);
 
-    console.log(data);
-
-    data.save()
-      .then((result) => {
-        console.log("Saved");
+    Data.findOne({hashKey : data.hashKey})
+      .then(found =>{
+        if(found){
+          console.log("Data already exists");
+        }
+        else{
+          data.save()
+          .then(() => {
+            console.log("Saved");
+          })
+          .catch((err)=>{console.log(err)});
+    
+        }
       })
-      .catch((err)=>{console.log(err)});
-    console.log(data.x_data,data.y_data);
+      .catch( err => {
+        console.log(err);
+      })
+
 
   });
 

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import socketIOClient from "socket.io-client";
 import './SketchPad.css'
 
+
+
 const scale = 3;
 const ENDPOINT = "http://localhost:4001";
 

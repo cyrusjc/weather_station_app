@@ -6,6 +6,11 @@ const dataSchema = new Schema({
         type: Object,
         required: true
     },
+    hashKey:{
+        type: String,
+        required: true
+    }
+    ,
 }, { timestamps: true })
 
 const Date = mongoose.model('Date', dataSchema);
