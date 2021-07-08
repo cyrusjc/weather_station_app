@@ -41,3 +41,11 @@ input {
   margin-bottom: 1em;
   border: 1px solid grey
 }
+
+#sketchCanvas{
+  border:1px solid #d3d3d3;
+}
+
+.SketchPad{
+  text-align: center;
+}

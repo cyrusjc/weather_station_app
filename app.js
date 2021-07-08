@@ -1,8 +1,12 @@
 const path = require('path');
 const cors = require('cors');
 
-// const Data = require('./models/data');	
-// global.data = Data();
+// data model schema for mongoose
+const Data = require('./models/data');	
+
+// object hash is for obtaining a hash key from our sketchpad object to obtain a unique key 
+// to ensure we do not store multiple sketches
+var hash = require('object-hash');
 
 const Coordinate = require('./models/coordinate.js');	
 global.data = new Coordinate();
@@ -79,17 +83,45 @@ io.on("connection", (socket) => {
     clearInterval(interval);
   }
   interval = setInterval(() => getApiAndEmit(socket), 100);
+
+  // this socket takes data from client/sketchpad.js and obtains a hashkey to store sketch into mongoDB 
+  socket.on("saveDB", sketch => {
+
+    data = Data();
+    data.points = sketch;
+    data.hashKey = hash(sketch);
+
+    Data.findOne({hashKey : data.hashKey})
+      .then(found =>{
+        if(found){
+          console.log("Data already exists");
+        }
+        else{
+          data.save()
+          .then(() => {
+            console.log("Saved");
+          })
+          .catch((err)=>{console.log(err)});
+    
+        }
+      })
+      .catch( err => {
+        console.log(err);
+      })
+
+
+  });
+
   socket.on("disconnect", () => {
     console.log("Client disconnected");
     clearInterval(interval);
   });
 });
 
+
+
 const getApiAndEmit = socket => {
-  // console.log("From Socket");
   const response = {}
-  console.log(global.data);
-  // Emitting a new message. Will be consumed by the client
   socket.emit("FromAPI", data);
 };
 
